@@ -18,6 +18,7 @@ target/
 *.iml
 *.ipr
 *.iws
+study.md
 
 #tempFile
 *.log
@@ -28,3 +29,8 @@ target/
 #system
 .DS_Store
 Thumbs.db
+
+#my
+db.properties
+datasource.properties
+
