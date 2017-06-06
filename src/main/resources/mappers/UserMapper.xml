@@ -15,31 +15,59 @@
             <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
         </constructor>
     </resultMap>
+
     <sql id="Base_Column_List">
     id, username, password, email, phone, question, answer, role, create_time, update_time
-  </sql>
+    </sql>
+
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
-        from mmall_user
-        where id = #{id,jdbcType=INTEGER}
+        from
+        mmall_user
+        where
+        id = #{id,jdbcType=INTEGER}
     </select>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from mmall_user
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
+    delete from
+    mmall_user
+    where
+    id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <!--插入一条User记录-->
     <insert id="insert" parameterType="com.scott.mmall.pojo.User">
-    insert into mmall_user (id, username, password, 
-      email, phone, question, 
-      answer, role, create_time, 
-      update_time)
-    values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-      #{email,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{question,jdbcType=VARCHAR}, 
-      #{answer,jdbcType=VARCHAR}, #{role,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+    insert into
+      mmall_user (
+      id,
+      username,
+      password,
+      email,
+      phone,
+      question,
+      answer,
+      role,
+      create_time,
+      update_time
+      )
+    values (
+      #{id,jdbcType=INTEGER},
+      #{username,jdbcType=VARCHAR},
+      #{password,jdbcType=VARCHAR},
+      #{email,jdbcType=VARCHAR},
+      #{phone,jdbcType=VARCHAR},
+      #{question,jdbcType=VARCHAR},
+      #{answer,jdbcType=VARCHAR},
+      #{role,jdbcType=INTEGER},
+      now(),
+      now()
+      )
   </insert>
+
     <insert id="insertSelective" parameterType="com.scott.mmall.pojo.User">
-        insert into mmall_user
+        insert into
+        mmall_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -98,10 +126,10 @@
                 #{role,jdbcType=INTEGER},
             </if>
             <if test="createTime != null">
-                #{createTime,jdbcType=TIMESTAMP},
+                now(),
             </if>
             <if test="updateTime != null">
-                #{updateTime,jdbcType=TIMESTAMP},
+                now(),
             </if>
         </trim>
     </insert>
@@ -132,23 +160,107 @@
             <if test="createTime != null">
                 create_time = #{createTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime,jdbcType=TIMESTAMP},
-            </if>
+            update_time = now(),
         </set>
-        where id = #{id,jdbcType=INTEGER}
+        where
+        id = #{id,jdbcType=INTEGER}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.scott.mmall.pojo.User">
-    update mmall_user
-    set username = #{username,jdbcType=VARCHAR},
-      password = #{password,jdbcType=VARCHAR},
-      email = #{email,jdbcType=VARCHAR},
-      phone = #{phone,jdbcType=VARCHAR},
-      question = #{question,jdbcType=VARCHAR},
-      answer = #{answer,jdbcType=VARCHAR},
-      role = #{role,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+        update
+        mmall_user
+        set
+        username = #{username,jdbcType=VARCHAR},
+        password = #{password,jdbcType=VARCHAR},
+        email = #{email,jdbcType=VARCHAR},
+        phone = #{phone,jdbcType=VARCHAR},
+        question = #{question,jdbcType=VARCHAR},
+        answer = #{answer,jdbcType=VARCHAR},
+        role = #{role,jdbcType=INTEGER},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        update_time = now()
+        where
+        id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <!--根据用户名更新密码-->
+    <update id="updatePasswordByUserName" parameterType="map">
+        update
+          mmall_user
+        set
+          password=#{newPassword,jdbcType=VARCHAR},
+          update_time=now()
+        where
+          username=#{username,jdbcType=VARCHAR}
+    </update>
+
+    <!--查询用户是否存在-->
+    <select id="checkUserName" resultType="int" parameterType="string">
+        SELECT
+          COUNT(1)
+        FROM
+          mmall_user
+        WHERE
+          username=#{username}
+    </select>
+
+    <!--查询该邮箱是否已经存在-->
+    <select id="checkUserEmail" resultType="int" parameterType="string">
+        SELECT
+        COUNT(1)
+        FROM
+        mmall_user
+        WHERE
+        email=#{email}
+    </select>
+
+    <!--根据用户名和密码验证登陆信息-->
+    <select id="selectLogin" resultMap="BaseResultMap" resultType="map">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        mmall_user
+        WHERE
+        username=#{username} AND password=#{password}
+    </select>
+
+    <!--根据用户名查询对应的问题-->
+    <select id="selectQuestionByUserName" resultType="string" parameterType="string">
+          select
+            question
+          from
+            mmall_user
+          where
+            username=#{username}
+    </select>
+
+    <!--验证问题的答案是否正确-->
+    <select id="checkAnswer" resultType="java.lang.Integer" parameterType="map">
+        select
+          COUNT(1)
+        from
+          mmall_user
+        where
+          username=#{username} AND question=#{question} AND answer=#{answer}
+    </select>
+
+    <!--根据ID检查用户的密码是否匹配-->
+    <select id="checkPassword" resultType="java.lang.Integer" parameterType="map">
+        select
+          count(1)
+        from
+          mmall_user
+        where
+          id=#{userId} AND password=#{password}
+    </select>
+
+    <!--排除自己，查看是否有相同的email-->
+    <select id="checkUserEmailByUsername" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+          COUNT(1)
+        from
+          mmall_user
+        where
+          email=#{email} AND username!=#{username}
+    </select>
+
 </mapper>

@@ -23,6 +23,10 @@ public class User {
 
     private Date updateTime;
 
+    public User() {
+        super();
+    }
+
     public User(Integer id, String username, String password, String email, String phone, String question, String answer, Integer role, Date createTime, Date updateTime) {
         this.id = id;
         this.username = username;
@@ -36,9 +40,7 @@ public class User {
         this.updateTime = updateTime;
     }
 
-    public User() {
-        super();
-    }
+
 
     public Integer getId() {
         return id;
