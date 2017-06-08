@@ -10,6 +10,10 @@ import java.util.UUID;
  * Created by Ubuntu on 2017/5/24.
  */
 public class GeneratorUtil {
+    private GeneratorUtil() {
+
+    }
+
     public static String generatorUUID() {
         String uuid = UUID.randomUUID().toString();
         return uuid;

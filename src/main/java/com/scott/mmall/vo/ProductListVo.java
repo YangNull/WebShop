@@ -7,17 +7,17 @@ import java.math.BigDecimal;
  */
 public class ProductListVo {
 
-    private Integer id;
-    private Integer categoryId;
+    private Integer id;//产品id
+    private Integer categoryId;//类别id
 
-    private String name;
-    private String subtitle;
-    private String mainImage;
-    private BigDecimal price;
+    private String name;//产品名字
+    private String subtitle;//标题
+    private String mainImage;//主图片
+    private BigDecimal price;//价格
 
-    private Integer status;
+    private Integer status;//销售状态
 
-    private String imageHost;
+    private String imageHost;//图片主机地址
 
     public Integer getId() {
         return id;

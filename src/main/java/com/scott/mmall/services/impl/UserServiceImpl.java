@@ -76,7 +76,7 @@ public class UserServiceImpl implements IUserService {
         user.setRole(BaseConstant.Role.ROLE_CUSTOMER);
         int result = userMapper.insert(user);
         if (result == 0) {
-            return ServerResponse.createByErrorMessage(BaseConstant.MSG_REGISTER_FAILUER);
+            return ServerResponse.createByErrorMessage(BaseConstant.MSG_REGISTER_FAILURE);
         }
         return ServerResponse.createBySuccessMessage(BaseConstant.MSG_REGISTER_SUCCESS);
     }
@@ -237,9 +237,15 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.createByErrorMessage(BaseConstant.MSG_USER_DOES_NOT_EXIST);
     }
 
+    /**
+     * 查检该用户是否为管理员
+     *
+     * @param user
+     * @return
+     */
     @Override
     public ServerResponse checkAdmin(User user) {
-        if (user != null || user.getRole() == BaseConstant.Role.ROLE_ADMIN) {
+        if (user != null && user.getRole() == BaseConstant.Role.ROLE_ADMIN) {
             return ServerResponse.createBySuccess();
         }
         return ServerResponse.createByError();

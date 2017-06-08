@@ -92,7 +92,7 @@ public class UserController {
         if (user != null) {
             return ServerResponse.createBySuccess(user);
         }
-        return ServerResponse.createByErrorMessage("MSG_USER_NOT_LOGIN");
+        return ServerResponse.createByErrorMessage("MSG_NEED_LOGIN");
 
     }
 
@@ -149,7 +149,7 @@ public class UserController {
         //TODO 用邮箱验+token方式去重置密码
         User user = (User) session.getAttribute(BaseConstant.KEY_CURRENT_USER);
         if (user == null) {
-            return ServerResponse.createByErrorMessage(BaseConstant.MSG_USER_NOT_LOGIN);
+            return ServerResponse.createByErrorMessage(BaseConstant.MSG_NEED_LOGIN);
         }
         if (StringUtils.isBlank(oldPassword) || StringUtils.isBlank(newPassword)) {
             return ServerResponse.createByErrorMessage(BaseConstant.MSG_PARAMETER_ERROR);
@@ -163,7 +163,7 @@ public class UserController {
         //TODO 接收数据不能用POJO的User，用VoUser，把敏感字段禁止更新，id,username,password
         User currentUser = (User) session.getAttribute(BaseConstant.KEY_CURRENT_USER);
         if (currentUser == null) {
-            return ServerResponse.createByErrorMessage(BaseConstant.MSG_USER_NOT_LOGIN);
+            return ServerResponse.createByErrorMessage(BaseConstant.MSG_NEED_LOGIN);
         }
         //更新用户信息，id不能更改，还有用户名不能更改
         user.setId(currentUser.getId());
@@ -187,7 +187,7 @@ public class UserController {
     public ServerResponse<User> getUserInformation(HttpSession session) {
         User currentUser = (User) session.getAttribute(BaseConstant.KEY_CURRENT_USER);
         if (currentUser == null) {
-            return ServerResponse.createByErrorMessage(BaseConstant.MSG_USER_NOT_LOGIN);
+            return ServerResponse.createByErrorMessage(BaseConstant.MSG_NEED_LOGIN);
         }
         return iUserService.queryUserInformation(currentUser.getId());
     }
